@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Gradient Maker v1</title>
+
+<style>
+/* CodePenのCSSをここに全部貼る */
+body {
+  margin: 0;
+  background: #111;
+  color: #eee;
+  font-family: system-ui, sans-serif;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+canvas {
+  flex: 1;
+  background: #000;
+  touch-action: manipulation;
+}
+
+.controls {
+  padding: 12px;
+  background: #1a1a1a;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+button, select {
+  padding: 8px 12px;
+  background: #333;
+  color: #eee;
+  border: none;
+  border-radius: 12px;
+}
+
+button.active {
+  background: #666;
+}
+
+.colorChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  background: #222;
+  border-radius: 12px;
+}
+
+.colorChip input {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+}
+
+.control-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 28px;
+}
+
+.toggle input { display: none; }
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: #444;
+  border-radius: 28px;
+  transition: 0.25s;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: 0.25s;
+}
+
+.toggle input:checked + .slider {
+  background: #4cafef;
+}
+
+.toggle input:checked + .slider::before {
+  transform: translateX(22px);
+}  
+</style>
+
+</head>
+<body>
+<!-- CodePenのHTMLをここに全部貼る -->
+  <div id="app">
+  <canvas id="canvas"></canvas>
+
+  <div class="controls">
+    <div class="row" id="colorsRow">
+      <button id="addColor">＋</button>
+      <button id="removeColor">−</button>
+    </div>
+
+    <div class="row">
+      <button id="todayRandom">今日のランダム</button>
+      <button id="randomNow">ランダム</button>
+    </div>
+
+    <div class="row">
+      <button data-type="linear" class="type active">Linear</button>
+      <button data-type="radial" class="type">Radial</button>
+    </div>
+
+    <div class="row">
+      <label>Angle <input type="range" id="angle" min="0" max="360" value="45"></label>
+      <label>Noise <input type="range" id="noise" min="0" max="15" value="0"></label>
+    </div>
+
+    <div class="control-row">
+  <label class="toggle">
+    <input type="checkbox" id="noiseToggle">
+    <span class="slider"></span>
+  </label>
+  <span id="noiseToggleLabel">OFF</span>
+</div>
+    
+    <div class="row">
+      <select id="size">
+        <option value="360">360 × 360</option>
+        <option value="512">512 × 512</option>
+        <option value="1170x2532">iPhone 壁紙</option>
+        <option value="1290x2796">iPhone Pro Max</option>
+      </select>
+      <label><input type="checkbox" id="circle"> Circle</label>
+    </div>
+
+    <button id="save">Save PNG</button>
+  </div>
+</div>
+
+<script>
+/* CodePenのJSをここに全部貼る */
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const angleInput = document.getElementById("angle");
+const noiseInput = document.getElementById("noise");
+const sizeSelect = document.getElementById("size");
+const circleCheck = document.getElementById("circle");
+const saveBtn = document.getElementById("save");
+
+const colorsRow = document.getElementById("colorsRow");
+const addColorBtn = document.getElementById("addColor");
+const removeColorBtn = document.getElementById("removeColor");
+
+const todayRandomBtn = document.getElementById("todayRandom");
+const randomNowBtn = document.getElementById("randomNow");
+const typeButtons = document.querySelectorAll(".type");
+
+let type = "linear";
+let colors = ["#5f9cff", "#b983ff"];
+let radialCenter = { x: 0.5, y: 0.5 };
+let dragging = false;
+
+const PALETTES = [
+  ["#03045e","#0077b6","#00b4d8","#90e0ef","#caf0f8"],
+  ["#231942","#5e548e","#9f86c0","#be95c4","#e0b1cb"],
+  ["#0b1320","#1c2541","#3a506b","#5bc0be","#6fffe9"],
+  ["#001219","#005f73","#0a9396","#94d2bd","#e9d8a6"]
+];
+
+function resizeCanvas() {
+  const v = sizeSelect.value;
+  if (v.includes("x")) {
+    const [w, h] = v.split("x").map(Number);
+    canvas.width = w;
+    canvas.height = h;
+  } else {
+    canvas.width = canvas.height = Number(v);
+  }
+  draw();
+}
+
+function renderColorChips() {
+  [...colorsRow.querySelectorAll(".colorChip")].forEach(n => n.remove());
+  colors.forEach((c, i) => {
+    const wrap = document.createElement("div");
+    wrap.className = "colorChip";
+    const input = document.createElement("input");
+    input.type = "color";
+    input.value = c;
+    input.oninput = () => { colors[i] = input.value; draw(); };
+    wrap.appendChild(input);
+    colorsRow.insertBefore(wrap, addColorBtn);
+  });
+  addColorBtn.disabled = colors.length >= 4;
+  removeColorBtn.disabled = colors.length <= 2;
+}
+
+function draw() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  if (circleCheck.checked) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(canvas.width/2, canvas.height/2,
+      Math.min(canvas.width, canvas.height)/2, 0, Math.PI*2);
+    ctx.clip();
+  }
+
+  let grad;
+  if (type === "linear") {
+    const rad = angleInput.value * Math.PI / 180;
+    grad = ctx.createLinearGradient(0,0,
+      Math.cos(rad)*canvas.width,
+      Math.sin(rad)*canvas.height);
+  } else {
+    const cx = radialCenter.x * canvas.width;
+    const cy = radialCenter.y * canvas.height;
+    grad = ctx.createRadialGradient(cx,cy,0,cx,cy,
+      Math.max(canvas.width,canvas.height)/1.2);
+  }
+
+  colors.forEach((c,i)=>{
+    grad.addColorStop(i/(colors.length-1), c);
+  });
+
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  if (circleCheck.checked) ctx.restore();
+
+ const amt = noiseToggle.checked ? Number(noiseInput.value) : 0;
+if (amt > 0) {
+  const img = ctx.getImageData(0,0,canvas.width,canvas.height);
+  const d = img.data;
+  for (let i=0;i<d.length;i+=4){
+    const n = (Math.random()*2-1)*amt;
+    d[i]+=n; d[i+1]+=n; d[i+2]+=n;
+  }
+  ctx.putImageData(img,0,0);
+} 
+  }
+
+canvas.addEventListener("pointerdown", e=>{
+  if (type!=="radial") return;
+  dragging=true; updateCenter(e);
+});
+canvas.addEventListener("pointermove", e=>{
+  if (!dragging || type!=="radial") return;
+  updateCenter(e);
+});
+canvas.addEventListener("pointerup", ()=>dragging=false);
+canvas.addEventListener("pointerleave", ()=>dragging=false);
+
+function updateCenter(e){
+  const r = canvas.getBoundingClientRect();
+  radialCenter.x = (e.clientX-r.left)/r.width;
+  radialCenter.y = (e.clientY-r.top)/r.height;
+  draw();
+}
+
+addColorBtn.onclick=()=>{ if(colors.length<4){ colors.push("#ffffff"); renderColorChips(); draw(); }};
+removeColorBtn.onclick=()=>{ if(colors.length>2){ colors.pop(); renderColorChips(); draw(); }};
+
+typeButtons.forEach(b=>{
+  b.onclick=()=>{
+    typeButtons.forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    type=b.dataset.type; draw();
+  };
+});
+
+todayRandomBtn.onclick=()=>{
+  const p = PALETTES[new Date().getDate()%PALETTES.length];
+  colors = p.slice(0,Math.max(2,Math.min(4,colors.length)));
+  renderColorChips(); draw();
+};
+
+randomNowBtn.onclick=()=>{
+  const p = PALETTES[Math.floor(Math.random()*PALETTES.length)];
+  colors = p.slice(0,Math.max(2,Math.min(4,colors.length)));
+  renderColorChips(); draw();
+};
+
+saveBtn.onclick=()=>{
+  const a=document.createElement("a");
+  a.download="gradient.png";
+  a.href=canvas.toDataURL("image/png");
+  a.click();
+};
+
+
+const noiseToggle = document.getElementById("noiseToggle");
+const noiseToggleLabel = document.getElementById("noiseToggleLabel");
+
+// 初期表示
+noiseToggleLabel.textContent = noiseToggle.checked ? "ON" : "OFF";
+
+noiseToggle.addEventListener("change", () => {
+  noiseToggleLabel.textContent = noiseToggle.checked ? "ON" : "OFF";
+
+  // OFFにしたらノイズ量をゼロにして即反映
+  if (!noiseToggle.checked) {
+    noiseInput.value = 0;
+    draw();
+  }
+});
+
+// スライダーを動かしたら必ず再描画（これで反映が戻る）
+angleInput.addEventListener("input", draw);
+
+// ノイズはトグルONのときだけ反映させたいならこう
+noiseInput.addEventListener("input", () => {
+  if (noiseToggle.checked) draw();
+});
+
+// Circleやサイズも効かせる（ついでに）
+circleCheck.addEventListener("input", draw);
+sizeSelect.addEventListener("change", resizeCanvas);
+
+renderColorChips();
+resizeCanvas();
+draw();
+
+</script>
+
+</body>
+</html>
