@@ -356,7 +356,16 @@ sizeSelect.addEventListener("change", resizeCanvas);
 
 // 空ボタン
 skyBtn.addEventListener("click", () => {
+
+  colors = [
+    `hsl(${Math.random()*360},70%,65%)`,
+    `hsl(${Math.random()*360},70%,65%)`,
+    `hsl(${Math.random()*360},70%,65%)`
+  ];
+
+  renderColorChips();
   draw();
+
 });
 
 function drawStars(ctx, w, h, count = 80) {
