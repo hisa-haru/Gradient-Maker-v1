@@ -203,15 +203,24 @@ const SKY_PALETTES = [
   ["#355C7D","#6C5B7B","#C06C84","#F67280"], // 夕暮れ
 ];
 
-function resizeCanvas() {
-  const v = sizeSelect.value;
-  if (v.includes("x")) {
-    const [w, h] = v.split("x").map(Number);
-    canvas.width = w;
-    canvas.height = h;
-  } else {
-    canvas.width = canvas.height = Number(v);
+function resizeCanvas(){
+
+  const maxW = window.innerWidth;
+  const maxH = window.innerHeight;
+
+  const aspect = 16/9;
+
+  let w = maxW;
+  let h = w / aspect;
+
+  if (h > maxH){
+    h = maxH;
+    w = h * aspect;
   }
+
+  canvas.width = w;
+  canvas.height = h;
+
   draw();
 }
 
@@ -357,14 +366,17 @@ sizeSelect.addEventListener("change", resizeCanvas);
 // 空ボタン
 skyBtn.addEventListener("click", () => {
 
-  colors = [
-    `hsl(${Math.random()*360},70%,65%)`,
-    `hsl(${Math.random()*360},70%,65%)`,
-    `hsl(${Math.random()*360},70%,65%)`
-  ];
+const base = Math.random()*360;
 
-  renderColorChips();
-  draw();
+colors = [
+  `hsl(${base},70%,65%)`,
+  `hsl(${base+20},70%,68%)`,
+  `hsl(${base+40},70%,72%)`,
+  `hsl(${base+60},70%,76%)`
+];
+
+renderColorChips();
+draw();
 
 });
 
