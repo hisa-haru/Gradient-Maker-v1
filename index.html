@@ -456,11 +456,15 @@ function generateStars(count){
   for(let i=0;i<count;i++){
 
     stars.push({
-      x: Math.random()*canvas.width,
-      y: Math.random()*canvas.height,
-      r: Math.random()*1.2,
-      a: Math.random()
-    });
+  x: Math.random()*canvas.width,
+  y: Math.random()*canvas.height,
+
+  r: Math.random() < 0.85
+      ? Math.random()*1.2
+      : Math.random()*2.2,
+
+  a: 0.5 + Math.random()*0.5
+});
 
   }
 
