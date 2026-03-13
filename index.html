@@ -127,6 +127,7 @@ button.active {
     <div class="row">
       <button id="todayRandom">今日のランダム</button>
       <button id="randomNow">ランダム</button>
+      <button id="skyBtn">✨空</button>
     </div>
 
     <div class="row">
@@ -168,6 +169,7 @@ const ctx = canvas.getContext("2d");
 
 const angleInput = document.getElementById("angle");
 const noiseInput = document.getElementById("noise");
+const skyBtn = document.getElementById("skyBtn");
 const sizeSelect = document.getElementById("size");
 const circleCheck = document.getElementById("circle");
 const saveBtn = document.getElementById("save");
@@ -316,13 +318,6 @@ randomNowBtn.onclick=()=>{
   renderColorChips(); draw();
 };
 
-//skyBtn.onclick = () => {
-//  const p = SKY_PALETTES[Math.floor(Math.random()*SKY_PALETTES.length)];
-//  colors = p.slice(0,Math.max(2,Math.min(4,colors.length)));
-//  renderColorChips();
-//  draw();
-//};
-
 saveBtn.onclick=()=>{
   const a=document.createElement("a");
   a.download="gradient.png";
@@ -358,6 +353,11 @@ noiseInput.addEventListener("input", () => {
 // Circleやサイズも効かせる（ついでに）
 circleCheck.addEventListener("input", draw);
 sizeSelect.addEventListener("change", resizeCanvas);
+
+// 空ボタン
+skyBtn.addEventListener("click", () => {
+  randomGradient();
+});
 
 function drawStars(ctx, w, h, count = 80) {
   ctx.fillStyle = "rgba(255,255,255,0.9)";
