@@ -192,6 +192,15 @@ const PALETTES = [
   ["#001219","#005f73","#0a9396","#94d2bd","#e9d8a6"]
 ];
 
+const SKY_PALETTES = [
+  ["#0B1E3D","#1F3C88","#4A90E2","#87CEFA"], // 夜空→朝
+  ["#1A2A6C","#B21F1F","#FDBB2D","#FFE29F"], // 夕焼け
+  ["#0F2027","#203A43","#2C5364","#89CFF0"], // 深海
+  ["#232526","#414345","#6DD5FA","#FFFFFF"], // 冬空
+  ["#20002C","#CBB4D4","#8E9EAB","#EEF2F3"], // 紫空
+  ["#355C7D","#6C5B7B","#C06C84","#F67280"], // 夕暮れ
+];
+
 function resizeCanvas() {
   const v = sizeSelect.value;
   if (v.includes("x")) {
@@ -304,6 +313,13 @@ randomNowBtn.onclick=()=>{
   const p = PALETTES[Math.floor(Math.random()*PALETTES.length)];
   colors = p.slice(0,Math.max(2,Math.min(4,colors.length)));
   renderColorChips(); draw();
+};
+
+skyBtn.onclick = () => {
+  const p = SKY_PALETTES[Math.floor(Math.random()*SKY_PALETTES.length)];
+  colors = p.slice(0,Math.max(2,Math.min(4,colors.length)));
+  renderColorChips();
+  draw();
 };
 
 saveBtn.onclick=()=>{
