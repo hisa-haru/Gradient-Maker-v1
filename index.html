@@ -272,6 +272,7 @@ if (amt > 0) {
   }
   ctx.putImageData(img,0,0);
 } 
+drawStars(ctx, canvas.width, canvas.height);
   }
 
 canvas.addEventListener("pointerdown", e=>{
@@ -358,10 +359,6 @@ noiseInput.addEventListener("input", () => {
 circleCheck.addEventListener("input", draw);
 sizeSelect.addEventListener("change", resizeCanvas);
 
-renderColorChips();
-resizeCanvas();
-draw();
-
 function drawStars(ctx, w, h, count = 80) {
   ctx.fillStyle = "rgba(255,255,255,0.9)";
 
@@ -376,7 +373,9 @@ function drawStars(ctx, w, h, count = 80) {
   }
 }
 
-drawStars(ctx, canvas.width, canvas.height);
+renderColorChips();
+resizeCanvas();
+draw();
 
 </script>
 
