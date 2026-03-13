@@ -169,6 +169,8 @@ button.active {
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+let Stars = [];
+
 const angleInput = document.getElementById("angle");
 const noiseInput = document.getElementById("noise");
 const starInput = document.getElementById("starInput");
@@ -190,7 +192,6 @@ let colors = ["#5f9cff", "#b983ff"];
 let radialCenter = { x: 0.5, y: 0.5 };
 let dragging = false;
 let shootingStar = null;
-let Stars = [];
 
 const PALETTES = [
   ["#03045e","#0077b6","#00b4d8","#90e0ef","#caf0f8"],
