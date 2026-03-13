@@ -271,7 +271,9 @@ function draw() {
   ctx.fillStyle = grad;
   ctx.fillRect(0,0,canvas.width,canvas.height);
 
-  if (circleCheck.checked) ctx.restore();
+if (circleCheck.checked) {
+  ctx.restore();
+}
 
  const amt = noiseToggle.checked ? Number(noiseInput.value) : 0;
 if (amt > 0) {
