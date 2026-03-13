@@ -189,6 +189,7 @@ let type = "linear";
 let colors = ["#5f9cff", "#b983ff"];
 let radialCenter = { x: 0.5, y: 0.5 };
 let dragging = false;
+let shootingStar = null;
 
 const PALETTES = [
   ["#03045e","#0077b6","#00b4d8","#90e0ef","#caf0f8"],
@@ -294,6 +295,31 @@ if (amt > 0) {
   ctx.putImageData(img,0,0);
 } 
 drawStars(ctx, canvas.width, canvas.height, Number(starInput.value));
+
+if (shootingStar) {
+
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 2;
+
+  ctx.beginPath();
+  ctx.moveTo(shootingStar.x, shootingStar.y);
+  ctx.lineTo(
+    shootingStar.x + 20,
+    shootingStar.y - 20
+  );
+  ctx.stroke();
+
+  shootingStar.x += shootingStar.vx;
+  shootingStar.y += shootingStar.vy;
+  shootingStar.life--;
+
+  if (shootingStar.life <= 0) {
+    shootingStar = null;
+  }
+}
+if (!shootingStar && Math.random() < 0.01) {
+  spawnShootingStar();
+}
   }
 
 canvas.addEventListener("pointerdown", e=>{
@@ -410,6 +436,25 @@ function drawStars(ctx, w, h, count = 80) {
     ctx.fill();
   }
 }
+
+function spawnShootingStar() {
+
+  shootingStar = {
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height * 0.4,
+    vx: -6,
+    vy: 6,
+    life: 60
+  };
+
+}
+
+function loop(){
+  draw();
+  requestAnimationFrame(loop);
+}
+
+loop();
 
 renderColorChips();
 resizeCanvas();
