@@ -190,6 +190,7 @@ let colors = ["#5f9cff", "#b983ff"];
 let radialCenter = { x: 0.5, y: 0.5 };
 let dragging = false;
 let shootingStar = null;
+let Stars = [];
 
 const PALETTES = [
   ["#03045e","#0077b6","#00b4d8","#90e0ef","#caf0f8"],
@@ -395,7 +396,10 @@ noiseInput.addEventListener("input", () => {
   if (noiseToggle.checked) draw();
 });
 
-starInput.addEventListener("input", draw);
+starInput.addEventListener("input", () => {
+  generateStars(Number(starInput.value));
+  draw();
+});
 
 // Circleやサイズも効かせる（ついでに）
 circleCheck.addEventListener("input", draw);
@@ -418,23 +422,18 @@ draw();
 
 });
 
-function drawStars(ctx, w, h, count = 80) {
+function drawStars(ctx){
 
-  for (let i = 0; i < count; i++) {
+  stars.forEach(s => {
 
-    const x = Math.random() * w;
-    const y = Math.random() * h;
-
-    const r = Math.random() * 1.2;
-
-    const brightness = 0.5 + Math.random() * 0.5;
-
-    ctx.fillStyle = `rgba(255,255,255,${brightness})`;
+    ctx.fillStyle = `rgba(255,255,255,${s.a})`;
 
     ctx.beginPath();
-    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
     ctx.fill();
-  }
+
+  });
+
 }
 
 function spawnShootingStar() {
@@ -449,6 +448,23 @@ function spawnShootingStar() {
 
 }
 
+function generateStars(count){
+
+  stars = [];
+
+  for(let i=0;i<count;i++){
+
+    stars.push({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height,
+      r: Math.random()*1.2,
+      a: Math.random()
+    });
+
+  }
+
+}
+
 function loop(){
   draw();
   requestAnimationFrame(loop);
@@ -458,6 +474,9 @@ loop();
 
 renderColorChips();
 resizeCanvas();
+
+generateStars(Number(starInput.value));
+
 draw();
 
 </script>
