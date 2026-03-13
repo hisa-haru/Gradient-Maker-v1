@@ -362,6 +362,22 @@ renderColorChips();
 resizeCanvas();
 draw();
 
+function drawStars(ctx, w, h, count = 80) {
+  ctx.fillStyle = "rgba(255,255,255,0.9)";
+
+  for (let i = 0; i < count; i++) {
+    const x = Math.random() * w;
+    const y = Math.random() * h;
+    const r = Math.random() * 1.2;
+
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+drawStars(ctx, canvas.width, canvas.height);
+
 </script>
 
 </body>
