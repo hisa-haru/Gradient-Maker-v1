@@ -138,6 +138,8 @@ button.active {
     <div class="row">
       <label>Angle <input type="range" id="angle" min="0" max="360" value="45"></label>
       <label>Noise <input type="range" id="noise" min="0" max="15" value="0"></label>
+      <label>Stars</label>
+      <input id="starInput" type="range" min="0" max="300" value="80">
     </div>
 
     <div class="control-row">
@@ -169,6 +171,7 @@ const ctx = canvas.getContext("2d");
 
 const angleInput = document.getElementById("angle");
 const noiseInput = document.getElementById("noise");
+const starInput = document.getElementById("starInput");
 const skyBtn = document.getElementById("skyBtn");
 const sizeSelect = document.getElementById("size");
 const circleCheck = document.getElementById("circle");
@@ -244,12 +247,17 @@ function draw() {
   ctx.clearRect(0,0,canvas.width,canvas.height);
 
   if (circleCheck.checked) {
-    ctx.save();
-    ctx.beginPath();
-    ctx.arc(canvas.width/2, canvas.height/2,
-      Math.min(canvas.width, canvas.height)/2, 0, Math.PI*2);
-    ctx.clip();
-  }
+
+  ctx.save();
+  ctx.beginPath();
+
+  const r = Math.min(canvas.width, canvas.height)/2;
+
+  ctx.arc(canvas.width/2, canvas.height/2, r, 0, Math.PI*2);
+
+  ctx.clip();
+
+}
 
   let grad;
   if (type === "linear") {
@@ -285,7 +293,7 @@ if (amt > 0) {
   }
   ctx.putImageData(img,0,0);
 } 
-drawStars(ctx, canvas.width, canvas.height);
+drawStars(ctx, canvas.width, canvas.height, Number(starInput.value));
   }
 
 canvas.addEventListener("pointerdown", e=>{
@@ -360,6 +368,8 @@ angleInput.addEventListener("input", draw);
 noiseInput.addEventListener("input", () => {
   if (noiseToggle.checked) draw();
 });
+
+starInput.addEventListener("input", draw);
 
 // Circleやサイズも効かせる（ついでに）
 circleCheck.addEventListener("input", draw);
