@@ -180,8 +180,8 @@ const ctx = canvas.getContext("2d");
 
 let stars = [];
 let shootingStar = null;
-let cloudEnabled = false
-let cloudDensity = 30
+let cloudEnabled = false;
+let cloudDensity = 30;
 
 const angleInput = document.getElementById("angle");
 const noiseInput = document.getElementById("noise");
@@ -420,6 +420,21 @@ starInput.addEventListener("input", () => {
 // Circleやサイズも効かせる（ついでに）
 circleCheck.addEventListener("input", draw);
 sizeSelect.addEventListener("change", resizeCanvas);
+
+// 雲
+const cloudToggle = document.getElementById("cloudToggle");
+
+cloudToggle.addEventListener("change", () => {
+  cloudEnabled = cloudToggle.checked;
+  draw();
+});
+
+const cloudDensitySlider = document.getElementById("cloudDensity");
+
+cloudDensitySlider.addEventListener("input", () => {
+  cloudDensity = cloudDensitySlider.value;
+  draw();
+});
 
 // 空ボタン
 skyBtn.addEventListener("click", () => {
