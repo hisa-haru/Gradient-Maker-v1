@@ -51,17 +51,15 @@ canvas {
     width: 160px;
   }
 
-   .row {
+  .row {
     gap: 12px;
-    align-items: flex-start;
+    align-items: center;
   }
 
   .row label {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
-    width: 100%;
-    justify-content: space-between;
   }
 
   .controls input[type="range"] {
@@ -70,6 +68,21 @@ canvas {
 
   canvas {
     height: 52vh;
+  }
+
+  .slider-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .slider-row label {
+    width: auto;
+    min-width: 90px;
+  }
+
+  .slider-row input[type="range"] {
+    width: 60%;
   }
 }
 
@@ -178,29 +191,37 @@ button.active {
       <button data-type="radial" class="type">Radial</button>
     </div>
 
-    <div class="row">
-      <label>Angle <input type="range" id="angle" min="0" max="360" value="45"></label>
-      <label>Noise <input type="range" id="noise" min="0" max="15" value="0"></label>
+    <div class="row slider-row">
+      <label>Angle</label>
+      <input type="range" id="angle" min="0" max="360" value="45">
+    </div>
+
+    <div class="row slider-row">
+      <label>Noise</label>
+      <input type="range" id="noise" min="0" max="15" value="0">
+    </div>
+
+    <div class="row slider-row">
       <label>Stars</label>
       <input id="starInput" type="range" min="0" max="300" value="80">
-      <label>
-      <input type="checkbox" id="cloudToggle">
-  Clouds
-</label>
+    </div>
 
-<label>
-  Density
-  <input type="range" id="cloudDensity" min="5" max="80" value="30">
-</label>
+    <div class="row">
+      <label><input type="checkbox" id="cloudToggle"> Clouds</label>
+    </div>
+
+    <div class="row slider-row">
+      <label>Density</label>
+      <input type="range" id="cloudDensity" min="5" max="80" value="30">
     </div>
 
     <div class="control-row">
-  <label class="toggle">
-    <input type="checkbox" id="noiseToggle">
-    <span class="slider"></span>
-  </label>
-  <span id="noiseToggleLabel">OFF</span>
-</div>
+     <label class="toggle">
+     <input type="checkbox" id="noiseToggle">
+     <span class="slider"></span>
+     </label>
+     <span id="noiseToggleLabel">OFF</span>
+   </div>
     
     <div class="row">
       <select id="size">
