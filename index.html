@@ -2,6 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>sky-gradient-lab</title>
 
 <style>
@@ -35,15 +36,19 @@ canvas {
 }
 
 @media (max-width: 600px) {
-
   .controls {
     font-size: 18px;
   }
 
-  input[type="range"] {
-    height: 24px;
+  .controls button,
+  .controls select,
+  .controls label {
+    font-size: 18px;
   }
 
+  .controls input[type="range"] {
+    width: 160px;
+  }
 }
 
 .row {
