@@ -140,6 +140,15 @@ button.active {
       <label>Noise <input type="range" id="noise" min="0" max="15" value="0"></label>
       <label>Stars</label>
       <input id="starInput" type="range" min="0" max="300" value="80">
+      <label>
+      <input type="checkbox" id="cloudToggle">
+  Clouds
+</label>
+
+<label>
+  Density
+  <input type="range" id="cloudDensity" min="5" max="80" value="30">
+</label>
     </div>
 
     <div class="control-row">
@@ -171,6 +180,8 @@ const ctx = canvas.getContext("2d");
 
 let stars = [];
 let shootingStar = null;
+let cloudEnabled = false
+let cloudDensity = 30
 
 const angleInput = document.getElementById("angle");
 const noiseInput = document.getElementById("noise");
@@ -297,6 +308,10 @@ if (amt > 0) {
   ctx.putImageData(img,0,0);
 } 
 drawStars(ctx, canvas.width, canvas.height, Number(starInput.value));
+
+if(cloudEnabled){
+  drawClouds(ctx,canvas.width,canvas.height)
+}
 
 if (shootingStar) {
 
@@ -473,6 +488,30 @@ function generateStars(count){
 function loop(){
   draw();
   requestAnimationFrame(loop);
+}
+
+function drawClouds(ctx, w, h) {
+
+  for(let i=0;i<cloudDensity;i++){
+
+    const x = Math.random()*w
+    const y = Math.random()*h
+
+    const r = 80 + Math.random()*120
+
+    const g = ctx.createRadialGradient(x,y,0,x,y,r)
+
+    g.addColorStop(0,"rgba(255,255,255,0.15)")
+    g.addColorStop(1,"rgba(255,255,255,0)")
+
+    ctx.fillStyle = g
+
+    ctx.beginPath()
+    ctx.arc(x,y,r,0,Math.PI*2)
+    ctx.fill()
+
+  }
+
 }
 
 loop();
