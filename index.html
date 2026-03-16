@@ -288,45 +288,50 @@ function renderColorChips() {
 }
 
 function draw() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const w = canvas.clientWidth;
+  const h = canvas.clientHeight;
+
+  ctx.clearRect(0, 0, w, h);
 
   if (circleCheck.checked) {
+    ctx.save();
+    ctx.beginPath();
 
-  ctx.save();
-  ctx.beginPath();
+    const cx = w / 2;
+    const cy = h / 2;
+    const r = Math.min(w, h) / 2;
 
-  const cx = canvas.clientWidth / 2;
-  const cy = canvas.clientHeight / 2;
-  const r = Math.min(canvas.clientWidth, canvas.clientHeight) / 2;
-
-  ctx.arc(cx, cy, r, 0, Math.PI * 2);
-  ctx.clip();
-  ctx.restore()
-
-}
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.clip();
+  }
 
   let grad;
   if (type === "linear") {
     const rad = angleInput.value * Math.PI / 180;
-    grad = ctx.createLinearGradient(0,0,
-      Math.cos(rad)*canvas.width,
-      Math.sin(rad)*canvas.height);
+    grad = ctx.createLinearGradient(
+      0, 0,
+      Math.cos(rad) * w,
+      Math.sin(rad) * h
+    );
   } else {
-    const cx = radialCenter.x * canvas.width;
-    const cy = radialCenter.y * canvas.height;
-    grad = ctx.createRadialGradient(cx,cy,0,cx,cy,
-      Math.max(canvas.width,canvas.height)/1.2);
+    const cx = radialCenter.x * w;
+    const cy = radialCenter.y * h;
+    grad = ctx.createRadialGradient(
+      cx, cy, 0,
+      cx, cy, Math.max(w, h) / 1.2
+    );
   }
 
-  colors.forEach((c,i)=>{
-    grad.addColorStop(i/(colors.length-1), c);
+  colors.forEach((c, i) => {
+    grad.addColorStop(i / (colors.length - 1), c);
   });
 
   ctx.fillStyle = grad;
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillRect(0, 0, w, h);
 
-if (circleCheck.checked) {
-  ctx.restore();
+  if (circleCheck.checked) {
+    ctx.restore();
+  }
 }
 
  const amt = noiseToggle.checked ? Number(noiseInput.value) : 0;
@@ -369,7 +374,6 @@ if (shootingStar) {
 if (!shootingStar && Math.random() < 0.01) {
   spawnShootingStar();
 }
-  }
 
 canvas.addEventListener("pointerdown", e=>{
   if (type!=="radial") return;
