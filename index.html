@@ -201,7 +201,7 @@ const ctx = canvas.getContext("2d");
 
 let stars = [];
 let shootingStar = null;
-let cloud = [];
+let clouds = [];
 let cloudEnabled = false;
 let cloudDensity = 30;
 
@@ -343,6 +343,12 @@ function draw() {
   }
   ctx.putImageData(img,0,0);
   } 
+
+  drawStars(ctx);
+
+  if(cloudEnabled){
+  drawClouds(ctx, canvas.width, canvas.height);
+  }
 
   if (shootingStar) {
 
