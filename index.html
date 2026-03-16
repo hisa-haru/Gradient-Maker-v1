@@ -231,15 +231,20 @@ function resizeCanvas(){
   let w = maxW;
   let h = w / aspect;
 
-  if (h > maxH){
+  if(h > maxH){
     h = maxH;
     w = h * aspect;
   }
 
-  canvas.width = w;
-  canvas.height = h;
+  const dpr = window.devicePixelRatio || 1;
 
-  draw();
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+
+  ctx.setTransform(dpr,0,0,dpr,0,0)
+
+  draw()
+
 }
 
 function renderColorChips() {
