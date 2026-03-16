@@ -332,9 +332,9 @@ function draw() {
   if (circleCheck.checked) {
     ctx.restore();
   }
-}
- const amt = noiseToggle.checked ? Number(noiseInput.value) : 0;
-if (amt > 0) {
+
+  const amt = noiseToggle.checked ? Number(noiseInput.value) : 0;
+  if (amt > 0) {
   const img = ctx.getImageData(0,0,canvas.width,canvas.height);
   const d = img.data;
   for (let i=0;i<d.length;i+=4){
@@ -342,7 +342,9 @@ if (amt > 0) {
     d[i]+=n; d[i+1]+=n; d[i+2]+=n;
   }
   ctx.putImageData(img,0,0);
-} 
+  } 
+}
+ 
 drawStars(ctx, canvas.width, canvas.height, Number(starInput.value));
 
 if(cloudEnabled){
