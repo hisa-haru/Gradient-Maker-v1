@@ -180,6 +180,7 @@ const ctx = canvas.getContext("2d");
 
 let stars = [];
 let shootingStar = null;
+let cloud = [];
 let cloudEnabled = false;
 let cloudDensity = 30;
 
@@ -432,8 +433,13 @@ cloudToggle.addEventListener("change", () => {
 const cloudDensitySlider = document.getElementById("cloudDensity");
 
 cloudDensitySlider.addEventListener("input", () => {
-  cloudDensity = cloudDensitySlider.value;
-  draw();
+
+  cloudDensity = Number(cloudDensitySlider.value)
+
+  generateClouds(cloudDensity)
+
+  draw()
+
 });
 
 // 空ボタン
@@ -505,16 +511,11 @@ function loop(){
   requestAnimationFrame(loop);
 }
 
-function drawClouds(ctx, w, h) {
+function drawClouds(ctx,w,h){
 
-  for(let i=0;i<cloudDensity;i++){
+  clouds.forEach(c => {
 
-    const x = Math.random()*w
-    const y = Math.random()*h
-
-    const r = 80 + Math.random()*120
-
-    const g = ctx.createRadialGradient(x,y,0,x,y,r)
+    const g = ctx.createRadialGradient(c.x,c.y,0,c.x,c.y,c.r)
 
     g.addColorStop(0,"rgba(255,255,255,0.15)")
     g.addColorStop(1,"rgba(255,255,255,0)")
@@ -522,8 +523,24 @@ function drawClouds(ctx, w, h) {
     ctx.fillStyle = g
 
     ctx.beginPath()
-    ctx.arc(x,y,r,0,Math.PI*2)
+    ctx.arc(c.x,c.y,c.r,0,Math.PI*2)
     ctx.fill()
+
+  })
+
+}
+
+function generateClouds(count){
+
+  clouds = []
+
+  for(let i=0;i<count;i++){
+
+    clouds.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: 80 + Math.random()*120
+    })
 
   }
 
@@ -535,6 +552,7 @@ renderColorChips();
 resizeCanvas();
 
 generateStars(Number(starInput.value));
+generateClouds(cloudDensity);
 draw();
 
 </script>
