@@ -343,15 +343,8 @@ function draw() {
   }
   ctx.putImageData(img,0,0);
   } 
-}
- 
-drawStars(ctx, canvas.width, canvas.height, Number(starInput.value));
 
-if(cloudEnabled){
-  drawClouds(ctx,canvas.width,canvas.height)
-}
-
-if (shootingStar) {
+  if (shootingStar) {
 
   ctx.strokeStyle = "white";
   ctx.lineWidth = 2;
@@ -371,9 +364,10 @@ if (shootingStar) {
   if (shootingStar.life <= 0) {
     shootingStar = null;
   }
-}
-if (!shootingStar && Math.random() < 0.01) {
+  }
+  if (!shootingStar && Math.random() < 0.01) {
   spawnShootingStar();
+  }
 }
 
 canvas.addEventListener("pointerdown", e=>{
